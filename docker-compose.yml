@@ -1,0 +1,17 @@
+services:
+  front-end:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_USERSERVICE_API: http://mock-backend:4000
+    depends_on:
+      - mock-backend
+
+  mock-backend:
+    image: clue/json-server
+    command: /data/db.json
+    volumes:
+      - ./mock-backend/db.json:/data/db.json
+    ports:
+      - "4000:4000"
