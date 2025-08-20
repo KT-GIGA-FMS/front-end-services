@@ -1,16 +1,12 @@
-export default function userPage() {
 
+
+export default function UserPage() {
+ 
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50">
   
-    return(
-  
-      <div className="flex h-screen bg-gray-50">
-       
-        <div>
-            <h1>User Page</h1>
-        </div>
-      </div>
-  
-    )
-   
-  
-  }
+     <h1>User Page</h1>
+    </div>
+  );
+}
