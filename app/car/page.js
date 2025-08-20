@@ -1,16 +1,6 @@
-export default function carPage() {
+// app/car/page.js
+import { redirect } from "next/navigation";
 
-  
-    return(
-  
-      <div className="flex h-screen bg-gray-50">
-       
-        <div>
-            <h1>Car Page</h1>
-        </div>
-      </div>
-  
-    )
-   
-  
-  }
+export default function CarIndexPage() {
+  redirect("/car/cars");
+}
