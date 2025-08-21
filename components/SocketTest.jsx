@@ -3,7 +3,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useEffect, useRef, useState } from "react";
 
-const HTTP_URL =  "https://car-tracking-service-hmarhqf6a0f8abb4.koreacentral-01.azurewebsites.net/ws";
+const HTTP_URL =  process.env.NEXT_PUBLIC_SOCKJS_HTTP || "";
 
 export default function StompSockJsProbe({ topic = "/topic/telemetry", sendDest = "/app/ping" }) {
   const clientRef = useRef(null);

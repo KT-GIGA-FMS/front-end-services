@@ -2,14 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import useCarStream from "../hooks/useCarStream";
 
-export default function MapView({ carId = "car-001" , maxTrail = 5000 }) {
+export default function MapView({ carId = "CAR002" , maxTrail = 5000 }) {
 
   
 
    
 // 차량 스트림 데이터 받아오는 부분분
   const { connected, lastPoint, lastTelemetry, getPath, topic  } = useCarStream(carId, {
-    byCar: false, throttleMs: 0, maxPath: maxTrail, debug: true,
+    byCar: true, throttleMs: 0, maxPath: maxTrail, debug: true,
   });
 
   useEffect(() => {
