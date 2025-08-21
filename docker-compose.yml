@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   front-end:
     build: .
@@ -7,6 +9,8 @@ services:
       NEXT_PUBLIC_USERSERVICE_API: http://mock-backend:4000
     depends_on:
       - mock-backend
+      # (선택) stream-gateway를 프록시로 쓸 계획이면 아래 줄 주석 해제
+      # - stream-gateway
 
   mock-backend:
     image: clue/json-server
@@ -15,3 +19,30 @@ services:
       - ./mock-backend/db.json:/data/db.json
     ports:
       - "4000:4000"
+
+  # 🔴 지금 depends_on에 쓰고 있는 redis를 실제로 정의해야 합니다.
+  # redis:
+  #   image: redis:7
+  #   ports:
+  #     - "6379:6379"
+
+  # generator:
+  #   build: ./mock-backend/generator
+  #   environment:
+  #     REDIS_URL: redis://redis:6379
+  #     CARS: car-001,car-002,car-003
+  #     TICK_MS: 1000
+  #     MAXLEN: 5000
+  #   depends_on:
+  #     - redis
+
+  # stream-gateway:
+  #   build: ./mock-backend/stream-gateway
+  #   environment:
+  #     REDIS_URL: redis://redis:6379
+  #     PORT: 8080
+  #     CORS_ORIGINS: http://localhost:3000
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - redis
