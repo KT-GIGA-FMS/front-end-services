@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs"; // Node 런타임에서 스트리밍
+import { NextRequest, NextResponse } from "next/server";
+
 
 // ===== 공통 유틸 =====
 const toRad = (d) => (d * Math.PI) / 180;

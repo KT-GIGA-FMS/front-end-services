@@ -24,13 +24,13 @@ export default function CarRegisterModal({ isOpen, onClose, onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); setError(""); setResult(null);
-  
+  //fetch 보내는 부분 : 프록시 서버 사용 
     try {
-      const res = await fetch("https://kt-fms-apim-dev.azure-api.net/car-service/v1/cars", {
+      const res = await fetch("api/proxy/car", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Ocp-Apim-Subscription-Key": "5b3a9cac916f4df0983220718d127863"
+          "Ocp-Apim-Subscription-Key": "mykey"
         },
         body: JSON.stringify(form)   // API 스펙과 맞는 JSON 전송
       });
