@@ -1,12 +1,11 @@
 
 import dynamic from "next/dynamic";
-import SocketTest from "../../components/SocketTest";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../../components/NavBar";
 
 
 export default function CarTrackingPage() {
 
-  const MapView = dynamic(() => import("../../components/MapView"), { ssr: false });
+  const MapView = dynamic(() => import("../../../components/MapView"), { ssr: false });
   const tabs = [
     { label: "실시간 차량 현황", href: "/car-tracking" },
     { label: "전체 운행 현황", href: "/car-tracking/multi-car" },
@@ -15,10 +14,9 @@ export default function CarTrackingPage() {
 
     <div className=" bg-gray-50">
       <NavBar tabs={tabs} />
-      <div>
+      <div className="w-50%">
         <MapView />
       </div>
-      <SocketTest />
     </div>
 
   )
