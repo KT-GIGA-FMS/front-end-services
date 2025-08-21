@@ -27,6 +27,18 @@ jobs:
       # 4️⃣ 빌드
       - name: Build Next.js app
         run: npm run build
+        
+      # ✅ 아티팩트
+      - name: Prepare standalone artifact
+        run: |
+          rm -rf out-azure
+          mkdir -p out-azure
+          cp -r .next/standalone/* out-azure/
+          mkdir -p out-azure/.next
+          cp -r .next/static out-azure/.next/static
+          if [ -d public ]; then cp -r public out-azure/public; fi
+          # (옵션) 안전 체크: server.js 없으면 실패
+          test -f out-azure/server.js || (echo "server.js not found" && exit 1)
 
       # 5️⃣ Azure에 배포
       - name: frontend-service
