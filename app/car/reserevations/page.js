@@ -3,9 +3,9 @@
 // 🔄 A ready-to-use dynamic SSR/SWR version is commented at the bottom.
 // ❗ No styled-jsx, no client-only imports → safe for Server Component + static export.
 import NavBar from "../../../components/NavBar";
-export const dynamic = 'error';       // ensure static rendering only
+export const dynamic = 'force-dynamic';       // ensure static rendering only
 export const revalidate = false;      // fully static, no ISR
-
+export const fetchCache = 'force-no-store';
 
 const API_URL = 'https://car-services-e6bmdpbjcffqfzd2.koreacentral-01.azurewebsites.net/api/v1/cars'; // /car 경로와 매칭되는 page.js
 
@@ -24,7 +24,7 @@ const SAMPLE_CARS = [
 
 async function getCarsAtBuild() {
   try {
-    const res = await fetch(API_URL, { cache: 'force-cache' }); // default for SSG
+    const res = await fetch(API_URL, { cache: 'no-store' }); // default for SSG
     if (!res.ok) throw new Error(`API Error ${res.status}`);
     const data = await res.json();
     return Array.isArray(data) ? data : [data];
