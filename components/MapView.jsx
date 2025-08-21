@@ -1,108 +1,70 @@
-'use client';
+"use client";
+import { useEffect, useRef, useState } from "react";
+import useCarStream from "../hooks/useCarStream";
 
-import { useEffect, useState } from "react";
+export default function MapView({ carId = "car-001" }) {
+  const { lastPoint } = useCarStream(carId);
 
-export default function MapView({ points = [] }) {
   const [naverMap, setNaverMap] = useState(null);
-  const [marker, setMarker] = useState(null);
-  const [polyline, setPolyline] = useState(null);
-  const [track, setTrack] = useState([]);   // 초기 track 상태
-  const [index, setIndex] = useState(0);    // 현재 이동 인덱스
+  const markerRef = useRef(null);
+  const polylineRef = useRef(null);
+  const pathRef = useRef([]);
 
-  // 기본 좌표 (강남역)
-  const defaultLat = points?.[0]?.lat ?? 37.4979;
-  const defaultLng = points?.[0]?.lng ?? 127.0276;
-
-  // 정적 JSON에서 데이터 로드
-  useEffect(() => {
-    fetch("/data/car-tracking/tracks.sample.json")
-      .then(r => r.json())
-      .then(setTrack)
-      .catch(console.error);
-  }, []);
-
-  // 네이버 지도 초기화
+  // 맵 초기화 (최초 1회)
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // 네이버 지도 API 스크립트 동적 로드
-    if (!window.naver?.maps) {
-      const script = document.createElement("script");
-      script.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=vybj2787v3";// pages/car-tracking/MapView.jsx
-      script.async = true;
-      script.onload = () => initNaverMap();
-      document.head.appendChild(script);
-    } else {
-      initNaverMap();
-    }
-
-    function initNaverMap() {
-      const initLat = track?.points?.[0]?.lat ?? defaultLat;
-      const initLng = track?.points?.[0]?.lng ?? defaultLng;
-
-      const mapOptions = {
-        center: new naver.maps.LatLng(initLat, initLng),
+    function init(lat, lng) {
+      const map = new naver.maps.Map("naverMap", {
+        center: new naver.maps.LatLng(lat, lng),
         zoom: 15,
         zoomControl: true,
-        zoomControlOptions: {
-          style: naver.maps.ZoomControlStyle.SMALL,
-          position: naver.maps.Position.TOP_RIGHT
-        }
-      };
-
-      const map = new naver.maps.Map('naverMap', mapOptions);
+        zoomControlOptions: { style: naver.maps.ZoomControlStyle.SMALL, position: naver.maps.Position.TOP_RIGHT }
+      });
       setNaverMap(map);
 
-      // 초기 마커
-      const initialMarker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(initLat, initLng),
+      markerRef.current = new naver.maps.Marker({
+        position: new naver.maps.LatLng(lat, lng),
         map,
-        icon: {
-          content: '<div style="background-color: #FF0000; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>',
-          anchor: new naver.maps.Point(10, 10)
-        }
+        icon: { content: '<div style="background:#FF0000;width:20px;height:20px;border-radius:50%;border:2px solid #fff;"></div>', anchor: new naver.maps.Point(10,10) }
       });
-      setMarker(initialMarker);
 
-      // 경로 폴리라인
-      if (track?.points?.length > 1) {
-        const path = track.points.map(p => new naver.maps.LatLng(p.lat, p.lng));
-        const newPolyline = new naver.maps.Polyline({
-          map,
-          path,
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 4
-        });
-        setPolyline(newPolyline);
-      }
+      polylineRef.current = new naver.maps.Polyline({
+        map, path: [], strokeColor: "#FF0000", strokeOpacity: 0.8, strokeWeight: 4
+      });
     }
-  }, [track]);
 
-  // 인덱스 변화 → 마커 이동
+    if (!window.naver?.maps) {
+      const script = document.createElement("script");
+      script.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=vybj2787v3"; // 본인 키
+      script.async = true;
+      script.onload = () => init(37.4979, 127.0276);
+      document.head.appendChild(script);
+    } else {
+      init(37.4979, 127.0276);
+    }
+  }, []);
+
+  // 실시간 포인트 들어올 때마다 지도 갱신
   useEffect(() => {
-    if (!naverMap || !marker || !track?.points?.[index]) return;
+    if (!naverMap || !lastPoint) return;
+    const { lat, lng } = lastPoint;
+    const ll = new naver.maps.LatLng(lat, lng);
 
-    const { lat, lng } = track.points[index];
-    const newPosition = new naver.maps.LatLng(lat, lng);
+    pathRef.current.push(ll);
+    polylineRef.current?.setPath([...pathRef.current]);
+    markerRef.current?.setPosition(ll);
 
-    marker.setPosition(newPosition);
-    naverMap.setCenter(newPosition);
-  }, [index, track, naverMap, marker]);
+    // 5포인트마다 한번만 중심 이동(너무 흔들리는 것 방지)
+    if (pathRef.current.length % 5 === 0) naverMap.setCenter(ll);
+  }, [lastPoint, naverMap]);
 
   return (
-    <div style={{width: "100rem",padding: "1rem"}}>
-      <div>
-        <div
-          id="naverMap"
-          style={{ width: "100%", height: "80vh", borderRadius: 12, border: "1px solid #ddd" }}
-        />
+    <div style={{ width: "100rem", padding: "1rem" }}>
+      <div id="naverMap" style={{ width: "100%", height: "80vh", borderRadius: 12, border: "1px solid #ddd" }} />
+      <div style={{ marginTop: 8, fontSize: 12 }}>
+        {lastPoint ? `lat ${lastPoint.lat}, lng ${lastPoint.lng}, v ${lastPoint.speedKmh}km/h` : "waiting..."}
       </div>
-
-      {/* 임시 버튼으로 이동 테스트 */}
-      {/* <button onClick={() => setIndex((prev) => (prev + 1) % (track?.points?.length || 1))}>
-        Move Next Point
-      </button> */}
     </div>
   );
 }

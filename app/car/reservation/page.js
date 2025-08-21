@@ -7,7 +7,7 @@ import NavBar from "../../../components/NavBar";
 // 예약 상태별 색상 정의
 const statusColors = {
   '사용중': { bg: '#e6f3ff', text: '#0066cc', border: '#b3d9ff' },
-  '사용예기': { bg: '#f0f9ff', text: '#0284c7', border: '#bae6fd' },
+  '사용대대기': { bg: '#f0f9ff', text: '#0284c7', border: '#bae6fd' },
   '사용완료': { bg: '#f0fdf4', text: '#16a34a', border: '#bbf7d0' },
 };
 
@@ -75,7 +75,7 @@ const vehicleData = [
 
 const reservationTabs = [
   { label: "전체 (7)", value: "all", count: 7 },
-  { label: "사용예기 (1)", value: "scheduled", count: 1 },
+  { label: "사용대기 (1)", value: "scheduled", count: 1 },
   { label: "사용중 (2)", value: "inuse", count: 2 },
   { label: "사용완료 (4)", value: "completed", count: 4 }
 ];
