@@ -16,7 +16,7 @@ export const carApi = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "Ocp-Apim-Subscription-Key": "5b3a9cac916f4df0983220718d127863"
+        "Ocp-Apim-Subscription-Key": process.env.APIM_SUBSCRIPTION_KEY
       },
       body: JSON.stringify(carData),
     });
