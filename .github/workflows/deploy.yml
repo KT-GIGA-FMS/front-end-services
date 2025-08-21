@@ -5,6 +5,9 @@ on:
     branches:
       - dev  # dev 브랜치에 push될 때 배포
 
+env:
+  IMAGE_NAME: kyeni/front-end   # <-- Docker Hub 리포지토리
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
