@@ -30,7 +30,7 @@ function parseTs(ts) {
  */
 export default function useCarStream(carId, opts = {}) {
   const {
-    sockUrl = "https://car-tracking-service-hmarhqf6a0f8abb4.koreacentral-01.azurewebsites.net/ws",
+    sockUrl = process.env.NEXT_PUBLIC_SOCKJS_HTTP || "",
     byCar = true,
     throttleMs = 200,
     maxPath = 5000,

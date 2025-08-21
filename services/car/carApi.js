@@ -1,18 +1,18 @@
 // services/carApi.js
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kt-fms-apim-dev.azure-api.net';
+const API_BASE_URL = process.env.NEXT_PUBLIC_CAR_BASE_URL || ""
 
 
 export const carApi = {
   // 차량 목록 조회
   getCars: async () => {
-    const response = await fetch(`${API_BASE_URL}/api/cars`);
+    const response = await fetch(`${API_BASE_URL}`);
     if (!response.ok) throw new Error('차량 조회 실패');
     return response.json();
   },
 
   // 차량 등록
   createCar: async (carData) => {
-    const response = await fetch(`${API_BASE_URL}/car-service/v1/cars`, {
+    const response = await fetch(`${API_BASE_URL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
